@@ -1,0 +1,21 @@
+# 忽略不需要部署的文件
+*.md
+!README.md
+*.ps1
+*.sh
+*.bat
+test_*.py
+verify_*.py
+verify_*.ps1
+nginx.conf
+docker-compose.yml
+Dockerfile
+alembic.ini
+alembic/
+.DS_Store
+node_modules/
+.git/
+.gitignore
+.env.example
+.env.local
+.env

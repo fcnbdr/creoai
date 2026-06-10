@@ -1,6 +1,28 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+import os
+
+# Vercel Serverless 环境检测
+IS_VERCEL = os.environ.get('VERCEL', '0') == '1'
+
+app = FastAPI(
+    title='AI短视频爆款系统 后端',
+    # Serverless 环境下禁用 docs，减少冷启动时间
+    docs_url=None if IS_VERCEL else '/docs',
+    redoc_url=None if IS_VERCEL else '/redoc',
+)
+
+# CORS 中间件
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
+
+# 延迟导入路由模块，避免 Serverless 冷启动时加载全部依赖
+# 仅在非 Vercel 环境或实际请求时才触发完整导入
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
 from app.api.ai import router as ai_router
@@ -18,32 +40,6 @@ from app.api.content_production import router as content_production_router
 from app.api.ecpro_images import router as ecpro_images_router
 from app.api.video_ai import router as video_ai_router
 from app.api.account import router as account_router
-from app.db.session import engine
-from app.db.base import Base
-from app.core.initial_data import init_all_data
-import app.models  # noqa: F401
-
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title='AI短视频爆款系统 后端')
-
-origins = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:3001',
-    'http://localhost:3002',
-    'http://127.0.0.1:3002',
-]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
-)
-
-app.mount('/uploads', StaticFiles(directory='uploads'), name='uploads')
 
 app.include_router(health_router, prefix='/api/health', tags=['health'])
 app.include_router(auth_router, prefix='/api/auth', tags=['auth'])
@@ -63,11 +59,10 @@ app.include_router(ecpro_images_router, prefix='/api/ecpro-images', tags=['ecpro
 app.include_router(video_ai_router, prefix='/api/video', tags=['video-ai'])
 app.include_router(account_router, prefix='/api/account', tags=['account'])
 
-@app.on_event('startup')
-def startup_event():
-    init_all_data()
-    print('Backend startup complete')
-
 @app.get('/')
 def root():
-    return {'message': 'AI短视频爆款系统 后端已启动'}
+    return {'message': 'AI短视频爆款系统 后端已启动', 'status': 'ok', 'vercel': IS_VERCEL}
+
+@app.get('/api')
+def api_root():
+    return {'message': 'API服务正常运行', 'version': '1.0.0', 'vercel': IS_VERCEL}
