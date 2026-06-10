@@ -266,7 +266,7 @@ export default function VideosPage() {
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   placeholder="标题或作者..."
                   className="flex-1"
                 />

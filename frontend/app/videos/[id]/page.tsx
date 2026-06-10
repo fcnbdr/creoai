@@ -85,6 +85,22 @@ export default function VideoDetailPage() {
     }
   }
 
+  async function handleProcess() {
+    if (!video) return
+    try {
+      const res = await fetch(`http://localhost:8001/api/videos/${video.id}/process`, {
+        method: 'POST',
+        headers: { Authorization: token ? `Bearer ${token}` : '' },
+      })
+      if (res.ok) {
+        alert('视频处理任务已启动')
+        fetchVideoDetail()
+      }
+    } catch (error) {
+      console.error('Failed to process video:', error)
+    }
+  }
+
   async function handleFullAnalysis() {
     if (!video) return
     

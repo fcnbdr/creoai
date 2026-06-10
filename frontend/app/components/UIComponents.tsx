@@ -62,6 +62,7 @@ export function Input({
   placeholder,
   value,
   onChange,
+  onKeyDown,
   icon,
   error,
   className = ''
@@ -71,6 +72,7 @@ export function Input({
   placeholder?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
   icon?: React.ReactNode
   error?: string
   className?: string
@@ -88,6 +90,7 @@ export function Input({
           type={type}
           value={value}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           className={`input-field ${icon ? 'pl-12' : 'pl-4'} ${error ? 'border-red-500/50 focus:border-red-500/50' : ''}`}
         />

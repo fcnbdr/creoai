@@ -167,7 +167,7 @@ export default function ECProPage() {
     }
   }
 
-  function getJobTypeBadge(jobType: string): { variant: 'success' | 'warning' | 'error' | 'info'; text: string; icon: string } {
+  function getJobTypeBadge(jobType: string): { variant: 'success' | 'warning' | 'error' | 'info' | 'cyan' | 'purple' | 'green'; text: string; icon: string } {
     switch (jobType) {
       case 'copywriting': return { variant: 'cyan', text: '文案生成', icon: '✍️' }
       case 'script': return { variant: 'purple', text: '脚本生成', icon: '📝' }
